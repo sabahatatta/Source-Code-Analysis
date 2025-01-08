@@ -1,0 +1,322 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Source Code Analysis</title>
+
+    <!-- Bootstrap and Font Awesome -->
+    <link
+      rel="stylesheet"
+      href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css"
+    />
+    <link
+      rel="stylesheet"
+      href="https://use.fontawesome.com/releases/v5.5.0/css/all.css"
+    />
+
+    <link
+      rel="stylesheet"
+      href="{{ url_for('static', filename='style.css') }}"
+    />
+
+    <style>
+      body,
+      html {
+        height: 100%;
+        margin: 0;
+        background: url("static/chat_icons/code.jpg") no-repeat center center fixed;
+        background-size: cover;
+        font-family: Arial, sans-serif;
+        color: white;
+      }
+
+      .container {
+        width: 90%;
+        max-width: 800px;
+        background: rgba(0, 0, 0, 0.8);
+        border-radius: 15px;
+        padding: 30px;
+        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.5);
+        margin: 20px auto;
+      }
+
+      h1,
+      h2 {
+        text-align: center;
+        font-weight: bold;
+      }
+
+      h1 {
+        font-size: 2rem;
+      }
+
+      h2 {
+        font-size: 1.5rem;
+        margin-bottom: 20px;
+      }
+
+      .input-section {
+        display: flex;
+        align-items: center;
+        margin-bottom: 30px;
+        background: rgba(255, 255, 255, 0.1);
+        border-radius: 10px;
+        padding: 10px;
+      }
+
+      .form-control {
+        flex: 1;
+        padding: 10px;
+        border: none;
+        border-radius: 10px 0 0 10px;
+        background: transparent;
+        color: white;
+        font-size: 1.2rem;
+      }
+
+      .form-control:focus {
+        outline: none;
+        box-shadow: 0 0 5px #457b9d;
+      }
+
+      .btn-primary {
+        border-radius: 0 10px 10px 0;
+        padding: 10px 20px;
+        background: linear-gradient(to right, #457b9d, #1d3557);
+        border: none;
+        color: white;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        font-size: 1.2rem;
+      }
+
+      .btn-primary:hover {
+        background: linear-gradient(to left, #457b9d, #1d3557);
+        box-shadow: 0 4px 10px rgba(0, 0, 0, 0.5);
+      }
+
+      .chat-section {
+        background: rgba(0, 0, 0, 0.9);
+        border-radius: 15px;
+        padding: 20px;
+        height: calc(100vh - 260px);
+        display: flex;
+        flex-direction: column;
+      }
+
+      .msg_card_body {
+        flex: 1;
+        overflow-y: auto;
+        margin-bottom: 20px;
+        padding: 10px;
+        background: rgba(0, 0, 0, 0.7);
+        border-radius: 10px;
+      }
+
+      .msg_cotainer {
+        display: flex;
+        align-items: center;
+        margin-bottom: 10px;
+      }
+
+      .msg_cotainer img {
+        height: 40px;
+        width: 40px;
+        border-radius: 50%;
+        margin-right: 10px;
+      }
+
+      .msg_cotainer_send img {
+        height: 40px;
+        width: 40px;
+        border-radius: 50%;
+        margin-left: 10px;
+      }
+
+      .msg_text {
+        background: rgba(69, 123, 157, 0.8);
+        padding: 10px 15px;
+        border-radius: 15px;
+        color: white;
+        max-width: 70%;
+        font-size: 1.1rem;
+      }
+
+      .msg_time {
+        font-size: 0.9rem;
+        color: #ccc;
+      }
+
+      .card-footer {
+        display: flex;
+        align-items: center;
+        padding: 10px 0;
+      }
+
+      .chat-input {
+        flex: 1;
+        padding: 10px;
+        border: none;
+        border-radius: 10px;
+        background: rgba(255, 255, 255, 0.1);
+        color: white;
+        font-size: 1.2rem;
+      }
+
+      .chat-input:focus {
+        outline: none;
+        box-shadow: 0 0 5px #457b9d;
+      }
+
+      .send_btn {
+        padding: 10px;
+        background: linear-gradient(to right, #457b9d, #1d3557);
+        border: none;
+        border-radius: 10px;
+        color: white;
+        cursor: pointer;
+        margin-left: 10px;
+        font-size: 1.5rem;
+      }
+
+      .send_btn:hover {
+        background: linear-gradient(to left, #457b9d, #1d3557);
+        box-shadow: 0 4px 10px rgba(0, 0, 0, 0.5);
+      }
+
+      .loading {
+        color: #fff;
+        font-style: italic;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="container">
+      <h1>Paste GitHub Repository Link Below:</h1>
+      <div class="input-section">
+        <input
+          type="text"
+          id="question"
+          class="form-control"
+          placeholder="Enter GitHub Repository Link"
+        />
+        <button class="btn btn-primary" id="submit-button">Send</button>
+      </div>
+      <div class="chat-section">
+        <h2>Analyze Source Code - Ask Questions</h2>
+        <div class="msg_card_body" id="messageFormeight"></div>
+        <div class="card-footer">
+          <input
+            type="text"
+            id="text"
+            class="chat-input"
+            placeholder="Type your message..."
+          />
+          <button class="send_btn" id="send">
+            <i class="fas fa-paper-plane"></i>
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+    <script>
+      $(document).ready(function () {
+        function scrollToBottom() {
+          const msgBody = $("#messageFormeight");
+          msgBody.scrollTop(msgBody[0].scrollHeight);
+        }
+    
+        function showLoading() {
+          $("#messageFormeight").append(
+            '<div class="msg_cotainer"><div class="msg_text loading">Loading...</div></div>'
+          );
+          scrollToBottom();
+        }
+    
+        function removeLoading() {
+          $(".loading").remove();
+        }
+    
+        // Submit GitHub Repository
+        $("#submit-button").click(function (e) {
+          e.preventDefault();
+          const question = $("#question").val();
+          if (!question.trim()) {
+            alert("Please enter a valid GitHub repository link.");
+            return;
+          }
+          showLoading();
+          $.ajax({
+            type: "POST",
+            url: "/chatbot",
+            data: { question },
+            success: function (result) {
+              removeLoading();
+              if (result.error) {
+                alert(result.error);
+              } else {
+                $("#messageFormeight").append(
+                  `<div class="msg_cotainer">
+                    <div class="msg_text">GitHub: ${result.response}</div>
+                  </div>`
+                );
+              }
+              $("#question").val("");
+              scrollToBottom();
+            },
+            error: function (xhr) {
+              removeLoading();
+              alert(`Error: ${xhr.responseJSON?.error || "Unknown error occurred."}`);
+            },
+          });
+        });
+    
+        // Chat Message Handling
+        $("#send").click(function (e) {
+          e.preventDefault();
+          const message = $("#text").val();
+          if (!message.trim()) {
+            alert("Please enter a valid message.");
+            return;
+          }
+          const time = new Date().toLocaleTimeString();
+          $("#messageFormeight").append(
+            `<div class="msg_cotainer_send">
+              <img src="static/chat_icons/user_image.png" alt="User" />
+              <div class="msg_text">${message}</div>
+              <span class="msg_time_send">${time}</span>
+            </div>`
+          );
+          scrollToBottom();
+          showLoading();
+          $.ajax({
+            type: "POST",
+            url: "/get",
+            data: { msg: message },
+            success: function (data) {
+              removeLoading();
+              if (data.error) {
+                alert(data.error);
+              } else {
+                $("#messageFormeight").append(
+                  `<div class="msg_cotainer">
+                    <img src="static/chat_icons/bot_image.png" alt="Bot" />
+                    <div class="msg_text">${data.response}</div>
+                  </div>`
+                );
+              }
+              scrollToBottom();
+            },
+            error: function (xhr) {
+              removeLoading();
+              alert(`Error: ${xhr.responseJSON?.error || "Unknown error occurred."}`);
+            },
+          });
+          $("#text").val("");
+        });
+      });
+    </script>    
+  </body>
+</html>

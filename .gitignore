@@ -1,0 +1,56 @@
+# Ignore the models folder
+/models/
+
+# Ignore node modules (if using Node.js)
+node_modules/
+
+# Ignore the github repository folder
+/repo/
+
+# Ignore Python cache files
+__pycache__/
+*.py[cod]
+*.pyo
+*.pyd
+
+# Ignore virtual environment directories
+env/
+venv/
+
+# Ignore macOS system files
+.DS_Store
+
+# Ignore logs and temporary files
+*.log
+*.tmp
+
+# Ignore IDE-specific files
+.idea/
+.vscode/
+*.swp
+
+# Ignore compiled files
+*.class
+*.o
+*.out
+*.so
+
+# Ignore sensitive configuration files (customize as needed)
+*.env
+*.env.local
+*.env.production
+*.env.test
+secrets.json
+
+# Ignore build and dependency directories
+build/
+dist/
+*.egg-info/
+*.egg
+
+# Ignore Git files
+.git/
+
+# Ignore other custom directories
+/temp/
+.cache/
